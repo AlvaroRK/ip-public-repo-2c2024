@@ -43,5 +43,5 @@ def deleteFavourite(request):
     pass
 
 @login_required
-def exit(request):
+def logout(request):
     pass
