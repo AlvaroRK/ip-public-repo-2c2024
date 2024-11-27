@@ -123,9 +123,9 @@ LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 
 #REGISTRO DE NUEVOS USUARIOS Y ENVIAR EMAIL
-#### settings.py
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'adriano.rk06@gmail.com'
-EMAIL_HOST_PASSWORD = 'your app password'
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'ipalvaro06rk@gmail.com'
+EMAIL_HOST_PASSWORD = 'clnhqnvblltpclba'

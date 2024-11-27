@@ -7,6 +7,11 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 
+#REGISTRO NUEVOS USUARIOS
+from django.contrib import messages
+from django.core.mail import send_mail
+from django.conf import settings
+
 def index_page(request):
     return render(request, 'index.html')
 
@@ -51,17 +56,16 @@ def logout(request):
 
 #REGISTRO DE NUEVOS USUARIOS
 def signup(request):
-    
     if request.method == 'GET':
-        return render(request, 'signup.html', {
-        'form': UserCreationForm
-    })
+        return render(request, 'signup.html', {'form': UserCreationForm})
     else:
+        #pregunta si las contraseñas coinciden
         if request.POST['password1'] == request.POST['password2']:
-            
+            #pregunta si el usuario existe (devuelve True o False)
             if existeUser(request.POST['username']):
-                return HttpResponse("el usuario existe")
+                return HttpResponse("el usuario ya existe")
             else:
+                # se registra el usuario
                 user = User.objects.create_user(
                     username=request.POST['username'],
                     email=request.POST['email'],
@@ -70,9 +74,21 @@ def signup(request):
                 user.first_name=request.POST['name'],
                 user.last_name=request.POST['surname'],
                 user.save()
+                # se envia el email
+                email = request.POST['email']
+                asunto = 'Registro Exitoso'
+                mensaje = f'Hola {request.POST["name"]},\n\nTe registrase exitosamente en nuestro sitio.'
+                send_mail(
+                    asunto,
+                    mensaje,
+                    settings.EMAIL_HOST_USER,
+                    [email],
+                    fail_silently=False
+                )
+                messages.success(request, 'Correo de confirmación enviado correctamente.')
                 return redirect('home')
         else:
             return HttpResponse("no coinciden las contraseñas")
-    
+        
 def existeUser(username):
     return User.objects.filter(username=username).exists()
