@@ -3,7 +3,9 @@
 from django.shortcuts import redirect, render
 from .layers.services import services
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from django.http import HttpResponse
 
 def index_page(request):
     return render(request, 'index.html')
@@ -45,3 +47,32 @@ def deleteFavourite(request):
 @login_required
 def logout(request):
     pass
+
+
+#REGISTRO DE NUEVOS USUARIOS
+def signup(request):
+    
+    if request.method == 'GET':
+        return render(request, 'signup.html', {
+        'form': UserCreationForm
+    })
+    else:
+        if request.POST['password1'] == request.POST['password2']:
+            
+            if existeUser(request.POST['username']):
+                return HttpResponse("el usuario existe")
+            else:
+                user = User.objects.create_user(
+                    username=request.POST['username'],
+                    email=request.POST['email'],
+                    password=request.POST['password1'],
+                    )
+                user.first_name=request.POST['name'],
+                user.last_name=request.POST['surname'],
+                user.save()
+                return redirect('home')
+        else:
+            return HttpResponse("no coinciden las contraseñas")
+    
+def existeUser(username):
+    return User.objects.filter(username=username).exists()
