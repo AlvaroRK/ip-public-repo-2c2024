@@ -14,13 +14,11 @@ def getAllImages(input=None):
     images = []
     for dato in json_collection:
         images.append({
-            "title": dato.get("title", "Sin título"),
             "url": dato.get("image"),
             "name" : dato.get("name"),
             "status": dato.get("status"),
             "first_seen": dato.get("origin", {}).get("name"),
             "last_location" : dato.get("location", {}).get("name"),
-            "info": dato.get("info")
         })
 
     return images
